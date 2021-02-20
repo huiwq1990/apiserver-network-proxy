@@ -1,0 +1,44 @@
+
+udsName: false
+
+connectMode: http-connect
+
+imagePullSecrets: []
+
+agent:
+  enabled: true
+  debug: true
+  image:
+    repository: huiwq1990/proxy-agent-amd64
+    tag: v0.0.15
+    pullPolicy: Always
+
+server:
+  enabled: true
+  debug: true
+  authAgent: false
+  image:
+    repository: huiwq1990/proxy-server-amd64
+    tag: v0.0.15
+    pullPolicy: Always
+
+testclient:
+  enabled: true
+  image:
+    repository: huiwq1990/proxy-test-client-amd64
+    tag: v0.0.15
+    pullPolicy: IfNotPresent
+
+testserver:
+  enabled: true
+  image:
+    repository: huiwq1990/http-test-server-amd64
+    tag: v0.0.15
+    pullPolicy: IfNotPresent
+
+kubia:
+  enabled: true
+  image:
+    repository: luksa/kubia
+    tag: latest
+    pullPolicy: IfNotPresent
