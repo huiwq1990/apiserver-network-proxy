@@ -12,7 +12,7 @@ COPY go.sum go.sum
 # replace directive for konnectivity-client in go.mod
 # The download will fail without the directory present
 COPY konnectivity-client/ konnectivity-client/
-
+RUN export GOPROXY=https://goproxy.io,direct
 # Cache dependencies
 RUN go mod download
 
@@ -26,7 +26,8 @@ ARG ARCH
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=${ARCH} go build -a -ldflags '-extldflags "-static"' -o proxy-server sigs.k8s.io/apiserver-network-proxy/cmd/server
 
 # Copy the loader into a thin image
-FROM scratch
+#FROM scratch
+FROM tpaas-registry-itg.jdcloud.com/tpaas/nicolaka/netshoot
 WORKDIR /
 COPY --from=builder /go/src/sigs.k8s.io/apiserver-network-proxy/proxy-server .
 ENTRYPOINT ["/proxy-server"]

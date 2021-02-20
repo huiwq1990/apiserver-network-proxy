@@ -1,0 +1,45 @@
+
+
+udsName: false
+
+connectMode: http-connect
+
+imagePullSecrets:
+  - name: tpaas-itg
+
+agent:
+  enabled: true
+  image:
+    repository: tpaas-registry-itg-vpc.jdcloud.com/konnectivity/proxy-agent-amd64
+    tag: v0.0.5
+#    pullPolicy: IfNotPresent
+    pullPolicy: Always
+
+server:
+  enabled: true
+  authAgent: false
+  image:
+    repository: tpaas-registry-itg-vpc.jdcloud.com/konnectivity/proxy-server-amd64
+    tag: v0.0.5
+    pullPolicy: Always
+
+testclient:
+  enabled: true
+  image:
+    repository: tpaas-registry-itg-vpc.jdcloud.com/konnectivity/proxy-test-client-amd64
+    tag: v0.0.2
+    pullPolicy: IfNotPresent
+
+testserver:
+  enabled: true
+  image:
+    repository: tpaas-registry-itg-vpc.jdcloud.com/konnectivity/http-test-server-amd64
+    tag: v0.0.2
+    pullPolicy: IfNotPresent
+
+kubia:
+  enabled: true
+  image:
+    repository: luksa/kubia
+    tag: latest
+    pullPolicy: IfNotPresent
