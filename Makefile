@@ -305,7 +305,7 @@ k8sdeploy: export PATH := $(shell pwd):$(PATH)
 k8sdeploy: easy-rsa-master cfssl cfssljson
 	cp -rf easy-rsa-master/easyrsa3 easy-rsa-master/k8smaster
 	cp -rf easy-rsa-master/easyrsa3 easy-rsa-master/k8sagent
-
+	mkdir -p certs
 	# create the client <-> server-proxy connection certs
 	cd easy-rsa-master/k8smaster; \
 	./easyrsa init-pki; \
@@ -349,11 +349,11 @@ k8sdeploy: easy-rsa-master cfssl cfssljson
 
 .PHONY: k8sclean
 k8sclean:
-	helm uninstall test
-	kubectl delete secret konnectivity-agentca
-	kubectl delete secret konnectivity-agentclient
-	kubectl delete secret konnectivity-agentserver
-	kubectl delete secret konnectivity-proxyca
-	kubectl delete secret konnectivity-proxyserver
-	rm -rf easy-rsa-master
+	helm uninstall test  | true
+	kubectl delete secret konnectivity-agentca  | true
+	kubectl delete secret konnectivity-agentclient  | true
+	kubectl delete secret konnectivity-agentserver  | true
+	kubectl delete secret konnectivity-proxyca  | true
+	kubectl delete secret konnectivity-proxyserver  | true
+	rm -rf easy-rsa-master  | true
 
