@@ -9,30 +9,30 @@ agent:
   enabled: true
   debug: true
   image:
-    repository: huiwq1990/proxy-agent-amd64
+    repository: gcr.io/apiserver-network-proxy/proxy-agent-amd64
     tag: v0.0.15
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
 
 server:
   enabled: true
   debug: true
   authAgent: false
   image:
-    repository: huiwq1990/proxy-server-amd64
+    repository: gcr.io/apiserver-network-proxy/proxy-server-amd64
     tag: v0.0.15
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
 
 testclient:
   enabled: true
   image:
-    repository: huiwq1990/proxy-test-client-amd64
+    repository: gcr.io/apiserver-network-proxy/proxy-test-client-amd64
     tag: v0.0.15
     pullPolicy: IfNotPresent
 
 testserver:
   enabled: true
   image:
-    repository: huiwq1990/http-test-server-amd64
+    repository: gcr.io/apiserver-network-proxy/http-test-server-amd64
     tag: v0.0.15
     pullPolicy: IfNotPresent
 
