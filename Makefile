@@ -311,9 +311,9 @@ clean:
 	rm -rf proto/agent/agent.pb.go konnectivity-client/proto/client/client.pb.go easy-rsa.tar.gz easy-rsa cfssl cfssljson certs bin proto/agent/mocks
 
 
-.PHONY: k8sdeploy
-k8sdeploy: export PATH := $(shell pwd):$(PATH)
-k8sdeploy: easy-rsa-master cfssl cfssljson
+.PHONY: deploy-kind
+deploy-kind: export PATH := $(shell pwd):$(PATH)
+deploy-kind: easy-rsa-master cfssl cfssljson
 	cp -rf easy-rsa-master/easyrsa3 easy-rsa-master/k8smaster
 	cp -rf easy-rsa-master/easyrsa3 easy-rsa-master/k8sagent
 	mkdir -p certs
@@ -332,7 +332,6 @@ k8sdeploy: easy-rsa-master cfssl cfssljson
 	cp -r easy-rsa-master/k8smaster/pki/issued/* certs/
 	cp easy-rsa-master/k8smaster/pki/ca.crt certs/proxyca.crt
 
-
 	# create the agent <-> server-proxy connection certs
 	cd easy-rsa-master/k8sagent; \
 	./easyrsa init-pki; \
@@ -348,23 +347,9 @@ k8sdeploy: easy-rsa-master cfssl cfssljson
 	cp -r easy-rsa-master/k8sagent/pki/issued/* certs/
 	cp easy-rsa-master/k8sagent/pki/ca.crt certs/agentca.crt
 
-	kubectl create secret tls konnectivity-proxyca --cert=certs/proxyca.crt --key=certs/proxyca.key
-	kubectl create secret tls konnectivity-proxyserver --cert=certs/proxyserver.crt --key=certs/proxyserver.key
-	kubectl create secret tls konnectivity-proxyclient --cert=certs/proxyclient.crt --key=certs/proxyclient.key
-	kubectl create secret tls konnectivity-agentca --cert=certs/agentca.crt --key=certs/agentca.key
-	kubectl create secret tls konnectivity-agentserver --cert=certs/agentserver.crt --key=certs/agentserver.key
-	kubectl create secret tls konnectivity-agentclient --cert=certs/agentclient.crt --key=certs/agentclient.key
+	ARCH=$(ARCH) TAG=${TAG} AGENT_FULL_IMAGE=${AGENT_FULL_IMAGE} SERVER_FULL_IMAGE=$(SERVER_FULL_IMAGE) TEST_CLIENT_FULL_IMAGE=$(TEST_CLIENT_FULL_IMAGE) TEST_SERVER_FULL_IMAGE=$(TEST_SERVER_FULL_IMAGE) KIND_LOAD_IMAGE=y FORCE_DEPLOY=y ./scripts/deploy-asnp.sh
 
-	helm install test-asnp ./examples/konnectivity
-
-.PHONY: k8sclean
-k8sclean:
-	helm uninstall test-asnp  | true
-	kubectl delete secret konnectivity-agentca | true
-	kubectl delete secret konnectivity-agentclient | true
-	kubectl delete secret konnectivity-agentserver | true
-	kubectl delete secret konnectivity-proxyca | true
-	kubectl delete secret konnectivity-proxyserver | true
-	kubectl delete secret konnectivity-proxyclient | true
+.PHONY: delete-kind
+delete-kind:
 	rm -rf easy-rsa-master certs
 

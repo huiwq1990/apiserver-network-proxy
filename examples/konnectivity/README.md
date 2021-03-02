@@ -3,14 +3,32 @@ A helm chart for `apiserver-network-proxy`, make it easy deploy and test.
 
 ## User Guide
 
-### deploy to kubernetes
+
+### build image
+
+```
+export REGISTRY=gcr.io/apiserver-network-proxy
+make docker-build
+```
+
+### download binaries
+
+```
+./scripts/download-binaries.sh
+```
+
+### create kind cluster
 
 ```shell
-make k8sdeploy
+export PATH=$(pwd)/bin:${PATH}
+
+kind create cluster
+
+make deploy-kind
 ```
 
 ### uninstall
 
 ```shell
-make k8sclean
+make delete-kind
 ```
