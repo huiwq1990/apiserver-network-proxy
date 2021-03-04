@@ -35,6 +35,8 @@ import (
 	"k8s.io/klog/v2"
 	"sigs.k8s.io/apiserver-network-proxy/pkg/agent"
 	"sigs.k8s.io/apiserver-network-proxy/pkg/util"
+	utilflag "k8s.io/component-base/cli/flag"
+	"k8s.io/component-base/logs"
 )
 
 func main() {
@@ -45,14 +47,12 @@ func main() {
 	flags.AddFlagSet(o.Flags())
 	local := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	klog.InitFlags(local)
-	err := local.Set("v", "4")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "error setting klog flags: %v", err)
-	}
-	local.VisitAll(func(fl *flag.Flag) {
-		fl.Name = util.Normalize(fl.Name)
-		flags.AddGoFlag(fl)
-	})
+	flags.SetNormalizeFunc(utilflag.WordSepNormalizeFunc)
+	flags.AddGoFlagSet(local)
+
+	logs.InitLogs()
+	defer logs.FlushLogs()
+
 	if err := command.Execute(); err != nil {
 		klog.Errorf("error: %v\n", err)
 		klog.Flush()
