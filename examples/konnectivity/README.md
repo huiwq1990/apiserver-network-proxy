@@ -32,3 +32,11 @@ make deploy-kind
 ```shell
 make delete-kind
 ```
+
+
+
+curl -v -p --proxy-key /opt/pki/proxyclient/tls.key --proxy-cert /opt/pki/proxyclient/tls.crt --proxy-cacert /opt/pki/proxyca/tls.crt --proxy-cert-type PEM -x https://127.0.0.1:8090  http://kubia:80
+
+
+
+
