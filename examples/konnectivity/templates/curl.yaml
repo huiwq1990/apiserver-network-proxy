@@ -1,0 +1,59 @@
+
+{{- if and .Values.testclient.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: konnectivity-test-curl
+  labels:
+    app: konnectivity-test-curl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: konnectivity-test-curl
+  template:
+    metadata:
+      labels:
+        app: konnectivity-test-curl
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- if .Values.udsName }}
+      hostNetwork: true
+{{- end }}
+      containers:
+        - name: curl
+          image: "nicolaka/netshoot"
+          imagePullPolicy: {{ .Values.testclient.image.pullPolicy }}
+          resources:
+            requests:
+              cpu: 1m
+          env:
+            - name: GRPC_VERBOSITY
+              value: debug
+            - name: GRPC_TRACE
+              value: tcp,http,api
+            - name: GODEBUG
+              value: http2debug=2
+          command: ["/bin/sh"]
+          args: ["-c", "while true; do echo hello; sleep 10;done"]
+#              "--ca-cert=/opt/pki/proxyca/tls.crt",
+#              "--client-cert=/opt/pki/proxyclient/tls.crt",
+#              "--client-key=/opt/pki/proxyclient/tls.key"
+          volumeMounts:
+          - name: proxyca
+            mountPath: /opt/pki/proxyca
+            readOnly: true
+          - name: proxyclient
+            mountPath: /opt/pki/proxyclient
+            readOnly: true
+      volumes:
+      - name: proxyca
+        secret:
+          secretName: konnectivity-proxyca
+      - name: proxyclient
+        secret:
+          secretName: konnectivity-proxyclient
+{{- end }}
