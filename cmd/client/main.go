@@ -22,6 +22,7 @@ import (
 	"crypto/tls"
 	"flag"
 	"fmt"
+	jsoniter "github.com/json-iterator/go"
 	vegeta "github.com/tsenart/vegeta/v12/lib"
 	"io/ioutil"
 	utilflag "k8s.io/component-base/cli/flag"
@@ -283,8 +284,8 @@ func (c *Client) makeRequest(o *GrpcProxyClientOptions, client *http.Client) err
 
 
 
-	rate := vegeta.Rate{Freq: 100, Per: time.Second}
-	duration := 4 * time.Second
+	rate := vegeta.Rate{Freq: 20, Per: time.Second}
+	duration := 10 * time.Second
 	targeter := vegeta.NewStaticTargeter(vegeta.Target{
 		Method: "GET",
 		URL:    requestURL,
@@ -297,6 +298,8 @@ func (c *Client) makeRequest(o *GrpcProxyClientOptions, client *http.Client) err
 	}
 	metrics.Close()
 
+	str,_ := jsoniter.MarshalToString(metrics)
+	fmt.Sprintf(str)
 	fmt.Printf("99th percentile: %s\n", metrics.Latencies.P99)
 
 
