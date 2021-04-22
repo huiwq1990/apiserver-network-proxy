@@ -35,7 +35,7 @@ import (
 	//"github.com/openyurtio/openyurt/pkg/yurthub/util"
 	//
 	//apirequest "k8s.io/apiserver/pkg/endpoints/request"
-	"k8s.io/klog"
+	"k8s.io/klog/v2"
 )
 
 var (
@@ -53,17 +53,26 @@ func (e *errorResponder) Error(w http.ResponseWriter, req *http.Request, err err
 func (c *Client)  startDummyServer(o *GrpcProxyClientOptions) {
 
 	m := http.NewServeMux()
+	m.HandleFunc("/ok", func(writer http.ResponseWriter, request *http.Request) {
+		writer.Write([]byte("ok"))
+	})
 
 	m.HandleFunc("/k8s", func(rw http.ResponseWriter, req *http.Request) {
 
+		// apiserver的地址
 		u, err := url.Parse("https://10.96.0.1:443/")
 		if err != nil {
 			er.Error(rw, req, err)
 			return
 		}
+
 		// 去除cluster前缀
-		u.Path = "/"
+		u.Path = "/api"
+
+		klog.InfoS("request","origin path",req.URL.Path,"dest path",u.Path)
+
 		u.RawQuery = req.URL.RawQuery
+
 
 		req.URL.Scheme = "https"
 
@@ -118,6 +127,7 @@ hvEG24B/Z3RQyVaYQnH2CcKeavnUdlnQ7AAL
 			upgradeProxy.ServeHTTP(rw, req)
 			return
 		}
+		klog.InfoS("request","url",u)
 		// 支持升级的代理
 		httpProxy := proxy.NewUpgradeAwareHandler(u, transport, true, false, er)
 		httpProxy.ServeHTTP(rw, req)
