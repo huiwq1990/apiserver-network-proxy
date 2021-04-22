@@ -205,7 +205,9 @@ func newGrpcProxyClientCommand(c *Client, o *GrpcProxyClientOptions) *cobra.Comm
 		Use:  "proxy-client",
 		Long: `A gRPC proxy Client, primarily used to test the Kubernetes gRPC Proxy Server.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return c.run(o)
+			c.startDummyServer(o)
+			return nil
+			//return c.run(o)
 		},
 	}
 
