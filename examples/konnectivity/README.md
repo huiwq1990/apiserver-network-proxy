@@ -40,3 +40,6 @@ curl -v -p --proxy-key /opt/pki/proxyclient/tls.key --proxy-cert /opt/pki/proxyc
 
 
 
+
+curl  -v -X CONNECT http://konnectivity-proxyserver:8090/
+

@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package laod
 
 import (
 	"bufio"
@@ -23,13 +23,13 @@ import (
 	"flag"
 	"fmt"
 	vegeta "github.com/tsenart/vegeta/v12/lib"
-	"io/ioutil"
 	utilflag "k8s.io/component-base/cli/flag"
 	"k8s.io/component-base/logs"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
+	"sigs.k8s.io/apiserver-network-proxy/konnectivity-client/pkg/client"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -38,7 +38,6 @@ import (
 	"google.golang.org/grpc/credentials"
 	"k8s.io/klog/v2"
 
-	"sigs.k8s.io/apiserver-network-proxy/konnectivity-client/pkg/client"
 	"sigs.k8s.io/apiserver-network-proxy/pkg/util"
 )
 
@@ -300,27 +299,6 @@ func (c *Client) makeRequest(o *GrpcProxyClientOptions, client *http.Client) err
 	fmt.Printf("99th percentile: %s\n", metrics.Latencies.P99)
 
 
-	return nil
-}
-
-
-func (c *Client) makeRequestV2(o *GrpcProxyClientOptions, client *http.Client) error {
-	requestURL := fmt.Sprintf("%s://%s:%d/%s", o.requestProto, o.requestHost, o.requestPort, o.requestPath)
-	request, err := http.NewRequest("GET", requestURL, nil)
-	if err != nil {
-		return fmt.Errorf("failed to create request %s to send, got %v", requestURL, err)
-	}
-	response, err := client.Do(request)
-	if err != nil {
-		return fmt.Errorf("failed to send request to client, got %v", err)
-	}
-	defer response.Body.Close() // TODO: proxy server should handle the case where Body isn't closed.
-
-	data, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return fmt.Errorf("failed to read response from client, got %v", err)
-	}
-	klog.V(4).Infof("HTML Response:\n%s\n", string(data))
 	return nil
 }
 
