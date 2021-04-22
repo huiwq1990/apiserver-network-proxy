@@ -283,7 +283,7 @@ func (c *Client) makeRequest(o *GrpcProxyClientOptions, client *http.Client) err
 	//klog.V(4).Infof("HTML Response:\n%s\n", string(data))
 
 
-
+	klog.InfoS("start load test")
 	rate := vegeta.Rate{Freq: 20, Per: time.Second}
 	duration := 10 * time.Second
 	targeter := vegeta.NewStaticTargeter(vegeta.Target{

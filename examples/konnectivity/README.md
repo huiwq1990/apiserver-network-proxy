@@ -23,7 +23,7 @@ make docker-build
 export PATH=$(pwd)/bin:${PATH}
 
 kind create cluster
-
+#export TAG="v0.0.1"
 make deploy-kind
 ```
 
