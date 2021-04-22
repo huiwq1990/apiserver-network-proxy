@@ -109,7 +109,7 @@ func (c *Client)  startDummyServer(o *GrpcProxyClientOptions) {
 	}
 
 	klog.Infof("[TEST] dummy-server is listening on :%d", 8088)
-	if err := s.ListenAndServeTLS("", ""); err != nil {
+	if err := s.ListenAndServe(); err != nil {
 		panic(err)
 	}
 }
