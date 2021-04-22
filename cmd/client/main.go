@@ -299,7 +299,7 @@ func (c *Client) makeRequest(o *GrpcProxyClientOptions, client *http.Client) err
 	metrics.Close()
 
 	str,_ := jsoniter.MarshalToString(metrics)
-	fmt.Sprintf(str)
+	fmt.Printf(str)
 	fmt.Printf("99th percentile: %s\n", metrics.Latencies.P99)
 
 
