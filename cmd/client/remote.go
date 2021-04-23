@@ -73,10 +73,12 @@ func (c *Client)  startDummyServer(o *GrpcProxyClientOptions) {
 
 		u.RawQuery = req.URL.RawQuery
 
-
 		req.URL.Scheme = "https"
 
 		req.URL.Host = req.Host
+
+		o.requestHost = "10.96.0.1"
+		o.requestPort = 443
 
 		dialer, err := c.getDialer(o)
 		if err != nil {
@@ -158,6 +160,9 @@ hvEG24B/Z3RQyVaYQnH2CcKeavnUdlnQ7AAL
 		req.URL.Scheme = "https"
 
 		req.URL.Host = req.Host
+
+		o.requestHost = "kubia"
+		o.requestPort= 80
 
 		dialer, err := c.getDialer(o)
 		if err != nil {
