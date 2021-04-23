@@ -68,3 +68,8 @@ kubectl delete pod -n $NS $podName
 curl http://konnectivity-test-client/ok
 curl http://konnectivity-test-client/k8s/clusters/xx/
 
+
+curl http://konnectivity-test-client/k8s/clusters/xx/api/v1/namespaces/default/pods
+
+curl http://konnectivity-test-client/k8s/clusters/xx/api/v1/namespaces/default/pods?auth=false&cacert=false
+

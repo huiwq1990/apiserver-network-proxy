@@ -77,6 +77,8 @@ type ClusterInfo struct {
 	Token string
 	Server string
 	CaCert []byte
+	ServerHost string
+	ServerPort int
 }
 
 
@@ -92,9 +94,11 @@ func (c *Client)  startDummyServer(o *GrpcProxyClientOptions) {
 	demoK8s := ClusterInfo{
 		Token: token,
 		Server:  "https://kubernetes.default",
+		ServerHost: "kubernetes.default",
+		ServerPort: 443,
 		CaCert: []byte(cacert),
 	}
-	
+
 	m.PathPrefix("/k8s/").HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 
 		enableCacert := true
@@ -131,8 +135,9 @@ func (c *Client)  startDummyServer(o *GrpcProxyClientOptions) {
 
 		req.URL.Host = req.Host
 
-		o.requestHost = "10.96.0.1"
-		o.requestPort = 443
+		// 需要访问的真实地址
+		o.requestHost = demoK8s.ServerHost
+		o.requestPort = demoK8s.ServerPort
 
 		dialer, err := c.getDialer(o)
 		if err != nil {
