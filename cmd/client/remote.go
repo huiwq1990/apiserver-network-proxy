@@ -59,6 +59,11 @@ func (c *Client)  startDummyServer(o *GrpcProxyClientOptions) {
 
 	m.HandleFunc("/k8s", func(rw http.ResponseWriter, req *http.Request) {
 
+		enableCacert := true
+		enableCacertStr,ok := req.URL.Query()["cacert"]
+		if ok && len(enableCacertStr)>0 && enableCacertStr[0]=="false" {
+			enableCacert = false
+		}
 		// apiserver的地址
 		u, err := url.Parse("https://10.96.0.1:443/")
 		if err != nil {
@@ -115,14 +120,15 @@ hvEG24B/Z3RQyVaYQnH2CcKeavnUdlnQ7AAL
 		//	er.Error(rw, req, err)
 		//	return
 		//}
-		certs := x509.NewCertPool()
-		certs.AppendCertsFromPEM([]byte(cacert))
-		transport.TLSClientConfig = &tls.Config{
-			RootCAs: certs,
+
+		if enableCacert {
+			certs := x509.NewCertPool()
+			certs.AppendCertsFromPEM([]byte(cacert))
+			transport.TLSClientConfig = &tls.Config{
+				RootCAs: certs,
+			}
 		}
-		//transport.TLSClientConfig =
-
-
+		
 		// 如果本身就是升级请求
 		if httpstream.IsUpgradeRequest(req) {
 			upgradeProxy := NewUpgradeProxy(u, transport)
@@ -144,7 +150,6 @@ hvEG24B/Z3RQyVaYQnH2CcKeavnUdlnQ7AAL
 		//		n, len([]byte(DummyServerResponse)))
 		//}
 	})
-
 
 	m.HandleFunc("/hello", func(rw http.ResponseWriter, req *http.Request) {
 
