@@ -44,6 +44,9 @@ curl -v -p --proxy-key /opt/pki/proxyclient/tls.key --proxy-cert /opt/pki/proxyc
 curl  -v -X CONNECT http://konnectivity-proxyserver:8090/
 
 
+
+
+git pull
 export TAG="v0.0.1"
 make docker-build/proxy-test-client
 
