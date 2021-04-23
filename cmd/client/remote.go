@@ -94,8 +94,8 @@ func (c *Client)  startDummyServer(o *GrpcProxyClientOptions) {
 		Server:  "https://kubernetes.default",
 		CaCert: []byte(cacert),
 	}
-
-	m.HandleFunc("/k8s/*", func(rw http.ResponseWriter, req *http.Request) {
+	
+	m.PathPrefix("/k8s/").HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 
 		enableCacert := true
 		enableCacertStr,ok := req.URL.Query()["cacert"]
