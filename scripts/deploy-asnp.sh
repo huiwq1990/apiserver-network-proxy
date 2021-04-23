@@ -40,3 +40,6 @@ helm install test-asnp ./examples/konnectivity \
   --set testclient.image.tag=${TAG} \
   --set testserver.image.repository=${TEST_SERVER_FULL_IMAGE}-${ARCH} \
   --set testserver.image.tag=${TAG} \
+  --set agent=false \
+  --set server=false
+

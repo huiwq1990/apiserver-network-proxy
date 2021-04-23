@@ -73,3 +73,30 @@ curl http://konnectivity-test-client/k8s/clusters/xx/api/v1/namespaces/default/p
 
 curl http://konnectivity-test-client/k8s/clusters/xx/api/v1/namespaces/default/pods?auth=false&cacert=false
 
+
+
+kind load docker-image "nicolaka/netshoot:latest" --name="${KIND_CLUSTER_NAME:-kind}"
+
+cat<<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-press
+spec:
+  containers:
+  - name: bb
+    image: nicolaka/netshoot
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do echo hello; sleep 10;done"]
+    resources:
+      requests:
+        cpu: 200m
+        memory: 200Mi
+      limits:
+       cpu: 200m
+       memory: 200Mi
+EOF
+
+
+
+ab -n 10000 -c 50 http://konnectivity-test-client/k8s/clusters/xx/api/v1/namespaces/default/pods
