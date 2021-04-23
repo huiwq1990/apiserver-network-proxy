@@ -23,7 +23,6 @@ import (
 	"k8s.io/apimachinery/pkg/util/httpstream"
 	"net/http"
 	"net/http/httputil"
-
 	"net/url"
 
 	"k8s.io/apimachinery/pkg/util/proxy"
@@ -49,6 +48,7 @@ func (e *errorResponder) Error(w http.ResponseWriter, req *http.Request, err err
 	w.Write([]byte(err.Error()))
 }
 
+var token = "eyJhbGciOiJSUzI1NiIsImtpZCI6InZpTTVMQlhQT3V2SUctWjNTbnJaUVJ0WWc1WnRkUDk2b1JhSmdBVnQwN1kifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6InRlc3Qta29ubmVjdGl2aXR5LXRva2VuLXJuemZ2Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6InRlc3Qta29ubmVjdGl2aXR5Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiMDZhYmEyY2MtZWIyNy00YzhkLWEzYzUtMGVlZThhNDRlNWI1Iiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmRlZmF1bHQ6dGVzdC1rb25uZWN0aXZpdHkifQ.g-l4DzsJEP5hRtaz5tCjSOOd9ZxPs0k4y37vB0z3j5896a6inE9-q9eACOCLz-Cstel_y5Ft5PiBRWlVggdSkqZeqBT_wisOJaDeeRDV_LSgysSk08nLQWtVhC7ivS6sVdabrziRWIPhtKk8YtD-YdVrBrEOyB8A_JSc9AUvrE_dpTJOWFOaxF6YWXRfbQKlit1TrExiPz5lSj1kkWV8s-NfYM9oY3QPfQYbpcriHbbGiHzz55vL6vCtTyTnC840bBZTjIIWYCpeVrb57XgXYYMAeEpfwcvmLusPd2Y66eZApRPZRwxuQu1noGUfryrAmfNaoBfQ_VaqkZ5m_hgfug"
 
 func (c *Client)  startDummyServer(o *GrpcProxyClientOptions) {
 
@@ -128,7 +128,9 @@ hvEG24B/Z3RQyVaYQnH2CcKeavnUdlnQ7AAL
 				RootCAs: certs,
 			}
 		}
-		
+
+		req.Header.Add("Authorization",fmt.Sprintf("Bearer %s",token))
+
 		// 如果本身就是升级请求
 		if httpstream.IsUpgradeRequest(req) {
 			upgradeProxy := NewUpgradeProxy(u, transport)
