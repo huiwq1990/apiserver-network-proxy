@@ -37,3 +37,18 @@ spec:
   selector:
     app: konnectivity-server
 {{- end }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: konnectivity-test-client
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8088
+      protocol: TCP
+      name: test-client
+  selector:
+    app: konnectivity-test-client

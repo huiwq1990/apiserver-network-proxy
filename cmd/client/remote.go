@@ -27,6 +27,7 @@ import (
 	"strings"
 
 	"k8s.io/apimachinery/pkg/util/proxy"
+	"github.com/gorilla/mux"
 
 	//
 	//"github.com/openyurtio/openyurt/pkg/yurthub/cachemanager"
@@ -83,7 +84,7 @@ type ClusterInfo struct {
 
 func (c *Client)  startDummyServer(o *GrpcProxyClientOptions) {
 
-	m := http.NewServeMux()
+	m := mux.NewRouter()
 	m.HandleFunc("/ok", func(writer http.ResponseWriter, request *http.Request) {
 		writer.Write([]byte("ok"))
 	})
@@ -94,7 +95,7 @@ func (c *Client)  startDummyServer(o *GrpcProxyClientOptions) {
 		CaCert: []byte(cacert),
 	}
 
-	m.HandleFunc("/k8s", func(rw http.ResponseWriter, req *http.Request) {
+	m.HandleFunc("/k8s/*", func(rw http.ResponseWriter, req *http.Request) {
 
 		enableCacert := true
 		enableCacertStr,ok := req.URL.Query()["cacert"]

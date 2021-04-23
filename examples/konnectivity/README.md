@@ -58,3 +58,10 @@ APP=konnectivity-test-client
 podName=`kubectl get pods -n $NS -l app=${APP} -o jsonpath='{.items[*].metadata.name}'`
 
 kubectl delete pod -n $NS $podName
+
+
+
+
+curl http://konnectivity-test-client/ok
+curl http://konnectivity-test-client/k8s/clusters/xx/
+
