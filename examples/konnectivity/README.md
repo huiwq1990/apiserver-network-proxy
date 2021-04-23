@@ -48,3 +48,13 @@ export TAG="v0.0.1"
 make docker-build/proxy-test-client
 
 kind load docker-image "gcr.io/apiserver-network-proxy/proxy-test-client-amd64:v0.0.1" --name="${KIND_CLUSTER_NAME:-kind}"
+
+
+
+
+NS=default
+APP=konnectivity-test-client
+
+podName=`kubectl get pods -n $NS -l app=${APP} -o jsonpath='{.items[*].metadata.name}'`
+
+kubectl delete pod -n $NS $podName
