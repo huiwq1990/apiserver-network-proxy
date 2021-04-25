@@ -25,9 +25,10 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"strings"
+	"sync"
 
-	"k8s.io/apimachinery/pkg/util/proxy"
 	"github.com/gorilla/mux"
+	"k8s.io/apimachinery/pkg/util/proxy"
 
 	//
 	//"github.com/openyurtio/openyurt/pkg/yurthub/cachemanager"
@@ -79,6 +80,9 @@ type ClusterInfo struct {
 	CaCert []byte
 	ServerHost string
 	ServerPort int
+	//Connection net.Conn
+	transport *http.Transport
+	lock sync.Locker
 }
 
 
@@ -139,14 +143,22 @@ func (c *Client)  startDummyServer(o *GrpcProxyClientOptions) {
 		o.requestHost = demoK8s.ServerHost
 		o.requestPort = demoK8s.ServerPort
 
-		dialer, err := c.getDialer(o)
-		if err != nil {
-			er.Error(rw, req, err)
-			return
+		var transport *http.Transport
+		if demoK8s.transport == nil {
+			demoK8s.lock.Lock()
+			dialer, err := c.getDialer(o)
+			if err != nil {
+				demoK8s.lock.Unlock()
+				er.Error(rw, req, err)
+				return
+			}
+			transport = &http.Transport{
+				DialContext: dialer,
+			}
+			demoK8s.transport = transport
+			demoK8s.lock.Unlock()
 		}
-		transport := &http.Transport{
-			DialContext: dialer,
-		}
+
 
 		if enableCacert {
 			certs := x509.NewCertPool()
