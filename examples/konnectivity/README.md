@@ -45,23 +45,25 @@ curl  -v -X CONNECT http://konnectivity-proxyserver:8090/
 
 
 
+### 重新编译client
 
+```shell
+
+#编译镜像
 git pull
 export TAG="v0.0.1"
 make docker-build/proxy-test-client
-
 kind load docker-image "gcr.io/apiserver-network-proxy/proxy-test-client-amd64:v0.0.1" --name="${KIND_CLUSTER_NAME:-kind}"
 
 
 
-
+# 重新拉取镜像
 NS=default
 APP=konnectivity-test-client
-
 podName=`kubectl get pods -n $NS -l app=${APP} -o jsonpath='{.items[*].metadata.name}'`
-
 kubectl delete pod -n $NS $podName
 
+```
 
 
 

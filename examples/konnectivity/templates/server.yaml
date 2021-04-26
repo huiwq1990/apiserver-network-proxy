@@ -65,27 +65,29 @@ spec:
             "--authentication-audience=system:konnectivity-server",
             {{- end -}}
           ]
-          livenessProbe:
-            httpGet:
-              scheme: HTTP
-              host: 127.0.0.1
-              port: 8092
-              path: /healthz
-            initialDelaySeconds: 10
-            timeoutSeconds: 60
-          ports:
-            - name: serverport
-              containerPort: 8090
-              hostPort: 8090
-            - name: agentport
-              containerPort: 8091
-              hostPort: 8091
-            - name: healthport
-              containerPort: 8092
-              hostPort: 8092
-            - name: adminport
-              containerPort: 8093
-              hostPort: 8093
+# 调试信息
+#          livenessProbe:
+#            httpGet:
+#              scheme: HTTP
+#              host: 127.0.0.1
+#              port: 8092
+#              path: /healthz
+#            initialDelaySeconds: 10
+#            timeoutSeconds: 60
+#          ports:
+#            - name: serverport
+#              containerPort: 8090
+#              hostPort: 8090
+#            - name: agentport
+#              containerPort: 8091
+#              hostPort: 8091
+#            - name: healthport
+#              containerPort: 8092
+#              hostPort: 8092
+#            - name: adminport
+#              containerPort: 8093
+#              hostPort: 8093
+
           volumeMounts:
             - name: agentserver
               mountPath: /opt/pki/agentserver

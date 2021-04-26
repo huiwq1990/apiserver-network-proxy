@@ -101,6 +101,7 @@ func (c *Client)  startDummyServer(o *GrpcProxyClientOptions) {
 		ServerHost: "kubernetes.default",
 		ServerPort: 443,
 		CaCert: []byte(cacert),
+		lock: &sync.Mutex{},
 	}
 
 	m.PathPrefix("/k8s/").HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
