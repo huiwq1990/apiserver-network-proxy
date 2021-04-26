@@ -51,6 +51,9 @@ curl  -v -X CONNECT http://konnectivity-proxyserver:8090/
 
 #编译镜像
 git pull
+export PATH=$(pwd)/bin:${PATH}
+
+export REGISTRY=gcr.io/apiserver-network-proxy
 export TAG="v0.0.1"
 make docker-build/proxy-test-client
 kind load docker-image "gcr.io/apiserver-network-proxy/proxy-test-client-amd64:v0.0.1" --name="${KIND_CLUSTER_NAME:-kind}"

@@ -144,7 +144,7 @@ func (c *Client)  startDummyServer(o *GrpcProxyClientOptions) {
 		o.requestHost = demoK8s.ServerHost
 		o.requestPort = demoK8s.ServerPort
 
-		var transport *http.Transport
+		transport := demoK8s.transport
 		if demoK8s.transport == nil {
 			demoK8s.lock.Lock()
 			dialer, err := c.getDialer(o)
@@ -159,7 +159,6 @@ func (c *Client)  startDummyServer(o *GrpcProxyClientOptions) {
 			demoK8s.transport = transport
 			demoK8s.lock.Unlock()
 		}
-
 
 		if enableCacert {
 			certs := x509.NewCertPool()
